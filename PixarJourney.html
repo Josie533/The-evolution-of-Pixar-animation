@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pixar Animation Journey Timeline - Interactive Edition</title>
+<style>
+  /* Reset & base */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f4f8;
+    color: #333;
+    margin: 0; padding: 0 20px;
+    overflow-x: hidden;
+  }
+  header {
+    background-color: #ed6a5a;
+    color: white;
+    padding: 25px 0;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 700;
+  }
+  header p {
+    margin: 5px 0 0;
+    font-style: italic;
+  }
+  main {
+    max-width: 900px;
+    margin: 40px auto;
+    position: relative;
+  }
+
+  /* Timeline base */
+  .timeline {
+    position: relative;
+    border-left: 3px solid #ed6a5a;
+    padding-left: 50px;
+  }
+  /* Timeline Dot */
+  .event-dot {
+    position: absolute;
+    left: -15px;
+    width: 30px; height: 30px;
+    background: #ed6a5a;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 8px rgba(237,106,90,0.8);
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  .event-dot:hover {
+    background: #bf4a43;
+  }
+
+  /* Event content */
+  .event {
+    margin-bottom: 60px;
+    position: relative;
+  }
+  .event h2 {
+    color: #ed6a5a;
+    cursor: pointer;
+    margin-top: 0;
+  }
+  .event h2:focus {
+    outline: 2px solid #ed6a5a;
+  }
+  .event-content {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.5s ease, opacity 0.5s ease;
+    margin-top: 10px;
+  }
+  .event-content.open {
+    max-height: 800px; /* Enough to fit content */
+    opacity: 1;
+  }
+
+  /* Images */
+  .event-image {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 10px 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+  /* Quotes & Trivia */
+  blockquote {
+    border-left: 5px solid #ed6a5a;
+    margin: 15px 0;
+    padding-left: 15px;
+    font-style: italic;
+    color: #555;
+    background: #fff8f7;
+    border-radius: 5px;
+  }
+  .trivia {
+    background: #f7f9fa;
+    padding: 10px 15px;
+    border-left: 5px solid #77aaff;
+    font-size: 0.9em;
+    margin-top: 10px;
+    border-radius: 4px;
+  }
+  /* Responsive video embed */
+  .video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    margin: 15px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  .video-wrapper iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+
+  /* Infographic Bar Graph */
+  .graph {
+    margin: 60px 0;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  .graph h3 {
+    color: #ed6a5a;
+    margin-top: 0;
+  }
+  .bar-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 200px;
+    padding: 10px 5px;
+    gap: 10px;
+  }
+  .bar {
+    width: 40px;
+    background: #ed6a5a;
+    border-radius: 6px 6px 0 0;
+    position: relative;
+    cursor: default;
+  }
+  .bar:hover {
+    background: #bf4a43;
+  }
+  .bar span {
+    position: absolute;
+    bottom: 100%;
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 0.85em;
+    color: #555;
+  }
+  .bar-label {
+    margin-top: 6px;
+    text-align: center;
+    font-size: 0.9em;
+    color: #555;
+  }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9em;
+    color: #777;
+    border-top: 1px solid #ccc;
+    margin-top: 60px;
+  }
+
+  /* Responsive */
+  @media (max-width: 700px) {
+    body {
+      padding: 0 15px;
+    }
+    .timeline {
+      padding-left: 30px;
+      border-left-width: 2px;
+    }
+    .event-dot {
+      left: -12px;
+      width: 24px; height: 24px;
+      border-width: 2px;
+    }
+    .bar {
+      width: 30px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Pixar Animation Journey Timeline</h1>
+  <p>An extensive, interactive overview of Pixar's groundbreaking evolution in animation</p>
+</header>
+
+<main>
+
+  <!-- Infographic: Box Office Growth -->
+  <section class="graph" aria-label="Pixar Box Office Growth Over Time">
+    <h3>Pixar Box Office Growth (Approximate in Billions USD)</h3>
+    <div class="bar-container" role="list">
+      <div class="bar" role="listitem" style="height: 50px;" title="1995 Toy Story: $0.4B"><span>$0.4B</span></div>
+      <div class="bar" role="listitem" style="height: 40px;" title="1998 A Bug's Life: $0.35B"><span>$0.35B</span></div>
+      <div class="bar" role="listitem" style="height: 75px;" title="1999 Toy Story 2: $0.48B"><span>$0.48B</span></div>
+      <div class="bar" role="listitem" style="height: 85px;" title="2001 Monsters, Inc.: $0.57B"><span>$0.57B</span></div>
+      <div class="bar" role="listitem" style="height: 90px;" title="2003 Finding Nemo: $0.87B"><span>$0.87B</span></div>
+      <div class="bar" role="listitem" style="height: 65px;" title="2006 Cars: $0.46B"><span>$0.46B</span></div>
+      <div class="bar" role="listitem" style="height: 60px;" title="2007 Ratatouille: $0.62B"><span>$0.62B</span></div>
+      <div class="bar" role="listitem" style="height: 70px;" title="2008 WALL-E: $0.53B"><span>$0.53B</span></div>
+      <div class="bar" role="listitem" style="height: 80px;" title="2009 Up: $0.74B"><span>$0.74B</span></div>
+      <div class="bar" role="listitem" style="height: 110px;" title="2010 Toy Story 3: $1.06B"><span>$1.06B</span></div>
+      <div class="bar" role="listitem" style="height: 45px;" title="2012 Brave: $0.54B"><span>$0.54B</span></div>
+      <div class="bar" role="listitem" style="height: 75px;" title="2015 Inside Out: $0.85B"><span>$0.85B</span></div>
+      <div class="bar" role="listitem" style="height: 70px;" title="2016 Finding Dory: $1.03B"><span>$1.03B</span></div>
+      <div class="bar" role="listitem" style="height: 80px;" title="2017 Coco: $0.80B"><span>$0.80B</span></div>
+      <div class="bar" role="listitem" style="height: 65px;" title="2020 Soul: $0.12B"><span>$0.12B</span></div>
+      <div class="bar" role="listitem" style="height: 40px;" title="2022 Lightyear: $0.22B"><span>$0.22B</span></div>
+    </div>
+    <div style="display:flex; justify-content: space-between; margin-top: 5px; font-size:0.85em; color:#777;">
+      <span>1995</span><span>2022</span>
+    </div>
+  </section>
+
+  <section class="timeline" aria-label="Pixar Animation Timeline">
+    <!-- Example Event Start -->
+    <article class="event" id="event1">
+      <div class="event-dot" style="top: 0;" tabindex="0" aria-controls="content1" aria-expanded="false" aria-label="Toggle 1979 - The Beginning at Lucasfilm details"></div>
+      <h2 tabindex="0" aria-controls="content1" aria-expanded="false">1979 - The Beginning at Lucasfilm</h2>
+      <div class="event-content" id="content1" aria-hidden="true">
+        <p>Pixar's origins trace back to the Graphics Group, part of Lucasfilm's computer division, founded by Ed Catmull and Alvy Ray Smith. This team pioneered early computer graphics technology.</p>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Ed_Catmull_1.jpg/320px-Ed_Catmull_1.jpg" alt="Ed Catmull, co-founder of Pixar" class="event-image" />
+        <blockquote>"Computers can do what people can’t — computers do stuff by rules, by math." - Ed Catmull</blockquote>
+        <div class="trivia">Did you know? The team originally worked on developing digital editing systems before shifting focus to animation.</div>
+        <p><a href="https://en.wikipedia.org/wiki/Ed_Catmull" target="_blank" rel="noopener">Learn more about Ed Catmull</a></p>
+      </div>
+    </article>
+
+    <article class="event" id="event2">
+      <div class="event-dot" style="top: 80px;" tabindex="0" aria-controls="content2" aria-expanded="false" aria-label="Toggle 1986 - Founding of Pixar details"></div>
+      <h2 tabindex="0" aria-controls="content2" aria-expanded="false">1986 - Founding of Pixar</h2>
+      <div class="event-content" id="content2" aria-hidden="true">
+        <p>Steve Jobs acquires the Graphics Group from Lucasfilm, renaming it Pixar. It initially focuses on high-end graphics hardware, but gradually shifts towards animation software and content creation.</p>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Steve_Jobs_Headshot_2010-CROP2.jpg/320px-Steve_Jobs_Headshot_2010-CROP2.jpg" alt="Steve Jobs, co-founder of Pixar" class="event-image" />
+        <blockquote>"Innovation distinguishes between a leader and a follower." - Steve Jobs</blockquote>
+        <div class="trivia">Did you know? Steve Jobs invested $10 million to buy Pixar and believed in the potential of CGI animation early on.</div>
+        <p><a href="https://en.wikipedia.org/wiki/Steve_Jobs" target="_blank" rel="noopener">Learn more about Steve Jobs</a></p>
+      </div>
+    </article>
+
+    <!-- More events below — I'll include some highlights to keep this manageable -->
+    <article class="event" id="event3">
+      <div class="event-dot" style="top: 160px;" tabindex="0" aria-controls="content3" aria-expanded="false" aria-label="Toggle 1988 - First Oscar for Tin Toy details"></div>
+      <h2 tabindex="0" aria-controls="content3" aria-expanded="false">1988 - First Oscar for "Tin Toy"</h2>
+      <div class="event-content" id="content3" aria-hidden="true">
+        <p>Pixar produces "Tin Toy," a groundbreaking short film that wins the Academy Award for Best Animated Short Film. It showcases the potential of computer animation storytelling.</p>
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e0/Tin_Toy_poster.jpg/320px-Tin_Toy_poster.jpg" alt="Poster for Tin Toy" class="event-image" />
+        <div class="video-wrapper">
+          <iframe src="https://www.youtube.com/embed/YMmWwL7tqbk" title="Tin Toy - Official Short Film" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="trivia">"Tin Toy" was the inspiration behind "Toy Story," Pixar's first feature film.</div>
+      </div>
+    </article>
+
+    <article class="event" id="event4">
+      <div class="event-dot" style="top: 240px;" tabindex="0" aria-controls="content4" aria-expanded="false" aria-label="Toggle 1995 - Release of Toy Story details"></div>
+      <h2 tabindex="0" aria-controls="content4" aria-expanded="false">1995 - Release of "Toy Story"</h2>
+      <div class="event-content" id="content4" aria-hidden="true">
+        <p>"Toy Story," the world's first fully computer-animated feature film, premieres. It becomes a massive critical and commercial success, revolutionizing the animation industry.</p>
+        <img src="https://upload.wikimedia.org/wikipedia/en/1/13/Toy_Story.jpg" alt="Toy Story movie poster" class="event-image" />
+        <div class="video-wrapper">
+          <iframe src="https://www.youtube.com/embed/KYz2wyBy3kc" title="Toy Story - Official Trailer" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <blockquote>"You've got a friend in me." - Randy Newman</blockquote>
+        <div class="trivia">"Toy Story" was nominated for three Academy Awards and received a Special Achievement Award for John Lasseter.</div>
+      </div>
+    </article>
+
+    <article class="event" id="event5">
+      <div class="event-dot" style="top: 320px;" tabindex="0" aria-controls="content5" aria-expanded="false" aria-label="Toggle 2003 - Finding Nemo details"></div>
+      <h2 tabindex="0" aria-controls="content5" aria-expanded="false">2003 - "Finding Nemo"</h2>
+      <div class="event-content" id="content5" aria-hidden="true">
+        <p>"Finding Nemo" captivates audiences with its underwater adventure and stunning water effects, earning Pixar its first Best Animated Feature Oscar.</p>
+        <img src="https://upload.wikimedia.org/wikipedia/en/2/29/Finding_Nemo.jpg" alt="Finding Nemo movie poster" class="event-image" />
+        <div class="video-wrapper">
+          <iframe src="https://www.youtube.com/embed/wZdpNglLbt8" title="Finding Nemo - Official Trailer" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <blockquote>"Just keep swimming." - Dory</blockquote>
+        <div class="trivia">Pixar developed new software to realistically animate underwater environments and fish movements.</div>
+      </div>
+    </article>
+
+    <article class="event" id="event6">
+      <div class="event-dot" style="top: 400px;" tabindex="0" aria-controls="content6" aria-expanded="false" aria-label="Toggle 2015 - Inside Out details"></div>
+      <h2 tabindex="0" aria-controls="content6" aria-expanded="false">2015 - "Inside Out"</h2>
+      <div class="event-content" id="content6" aria-hidden="true">
+        <p>"Inside Out" creatively personifies human emotions, earning widespread acclaim for its originality and emotional storytelling.</p>
+        <img src="https://upload.wikimedia.org/wikipedia/en/0/0a/Inside_Out_%282015_film%29_poster.jpg" alt="Inside Out movie poster" class="event-image" />
+        <div class="video-wrapper">
+          <iframe src="https://www.youtube.com/embed/seMwpP0yeu4" title="Inside Out - Official Trailer" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <blockquote>"Do you ever look at someone and wonder, 'What is going on inside their head?'" - Riley</blockquote>
+        <div class="trivia">The film won the Academy Award for Best Animated Feature and sparked conversations about mental health.</div>
+      </div>
+    </article>
+
+    <article class="event" id="event7">
+      <div class="event-dot" style="top: 480px;" tabindex="0" aria-controls="content7" aria-expanded="false" aria-label="Toggle 2020 - Soul details"></div>
+      <h2 tabindex="0" aria-controls="content7" aria-expanded="false">2020 - "Soul"</h2>
+      <div class="event-content" id="content7" aria-hidden="true">
+        <p>"Soul" explores life, purpose, and music with a unique blend of jazz and animation, winning the Academy Award for Best Animated Feature.</p>
+        <img src="https://upload.wikimedia.org/wikipedia/en/3/34/Soul_%282020_film%29_poster.jpg" alt="Soul movie poster" class="event-image" />
+        <div class="video-wrapper">
+          <iframe src="https://www.youtube.com/embed/xOsLIiBStEs" title="Soul - Official Trailer" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <blockquote>"Music is life." - Joe Gardner</blockquote>
+        <div class="trivia">Released during the COVID-19 pandemic, "Soul" was a streaming hit on Disney+.</div>
+      </div>
+    </article>
+
+    <!-- Add more events as desired -->
+
+  </section>
+</main>
+
+<footer>
+  &copy; 2025 Pixar Animation Journey | Timeline created by ChatGPT
+</footer>
+
+<script>
+  // Toggle event details on clicking dot or heading
+  const events = document.querySelectorAll('.event');
+
+  events.forEach(event => {
+    const dot = event.querySelector('.event-dot');
+    const heading = event.querySelector('h2');
+    const content = event.querySelector('.event-content');
+
+    function toggleContent() {
+      const isOpen = content.classList.toggle('open');
+      dot.setAttribute('aria-expanded', isOpen);
+      heading.setAttribute('aria-expanded', isOpen);
+      content.setAttribute('aria-hidden', !isOpen);
+      if(isOpen){
+        content.scrollIntoView({behavior: 'smooth', block: 'start'});
+        playClickSound();
+      }
+    }
+
+    dot.addEventListener('click', toggleContent);
+    dot.addEventListener('keypress', e => {
+      if(e.key === 'Enter' || e.key === ' ') toggleContent();
+    });
+    heading.addEventListener('click', toggleContent);
+    heading.addEventListener('keypress', e => {
+      if(e.key === 'Enter' || e.key === ' ') toggleContent();
+    });
+  });
+
+  // Background Music (looped)
+  const bgMusic = new Audio('https://cdn.pixabay.com/download/audio/2021/09/26/audio_7d37609b06.mp3?filename=calm-piano-10863.mp3');
+  bgMusic.loop = true;
+  bgMusic.volume = 0.15;
+  bgMusic.play().catch(() => {
+    // Autoplay might be blocked, add a play button later if needed
+  });
+
+  // Click sound effect
+  const clickSound = new Audio('https://freesound.org/data/previews/256/256113_3263906-lq.mp3');
+  function playClickSound(){
+    clickSound.currentTime = 0;
+    clickSound.play();
+  }
+</script>
+
+</body>
+</html>
